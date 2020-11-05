@@ -6,7 +6,7 @@ import subprocess
 
 filename = 'tetris-bot.py'
 while True:
-    p = subprocess.Popen('python3.6 '+filename, shell=True).wait()
+    p = subprocess.Popen('python3 '+filename, shell=True).wait()
 
     if p != 0:
         continue
