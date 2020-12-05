@@ -77,10 +77,12 @@ class Game:
     async def tick(self):
         if self.game_stopped: return
         self.ticks += 1
-        if self.ticks % (30-self.level*2) == 0 and not self.game_over:
-            self.current_block.fall()
-            await self.update_board()
-        if self.game_over: await self.end_game()
+        try:
+            if self.ticks % (30-self.level*2) == 0 and not self.game_over:
+                self.current_block.fall()
+                await self.update_board()
+            if self.game_over: await self.end_game()
+        except: pass
         
         
 
@@ -106,7 +108,7 @@ class Game:
         embed = self.message.embeds[0]
         embed.description = end_screen
         embed.set_thumbnail(url="https://i.imgur.com/UQYHC56.png")
-        embed.set_footer(text="made by jackscape#8867", icon_url="https://cdn.discordapp.com/attachments/464521761711456263/747922619055210628/45863597.png")
+        embed.set_footer(text="made by jackscape#8867", icon_url="https://cdn.discordapp.com/attachments/464521761711456263/783447850964484166/17257926.png")
         await self.message.edit(embed=embed)
         await self.message.clear_reactions()
         await self.update_scores()
@@ -372,6 +374,7 @@ async def on_message(message):
         embed.add_field(name="`>unpause`",value="unpause your current game")
         embed.add_field(name="`>monochrome`",value="play game without color (in case it doesn't display well)")
         embed.add_field(name="`>invite`",value="get link to invite tetris bot to other servers")
+        embed.add_field(name="`>support`",value="help")
         await message.channel.send(embed=embed)
 
     if message.content.lower().startswith(">highscore") or message.content.lower().startswith(">rank"):
@@ -437,25 +440,18 @@ async def on_message(message):
 
 
     if message.content.lower().startswith(">leaderboard"):
-        await message.channel.send("becasuse discord refuses to get back to me i still can't access their member list, so the leaderboard is currently broken. for now you can use >highscore to find your global rank")
-        
-        '''
         embed = discord.Embed(color=0xFFDF00,title="tetris leaderboards")
         f = open("highscores.txt","r")
         text = f.readlines()
         f.close()
         highscores = {}
         for i in range(10):
-            if True:#try:
+            try:
                 split_text = text[i].replace("\n","").split(":")
-                p = subprocess.Popen(f"python3.6 snag.py {split_text}", shell=True).wait()
-                while p != 0: continue
-                f = open("user.txt","r")
-                username = f.read()
-                f.close()
-                os.system("pkill -f snag.py")
+                usr = await bot.fetch_user(split_text[0])
+                username = str(usr)
                 highscores[username] = split_text[1]
-            else:#except:
+            except:
                 break
         print("highscores!!")
         print(highscores)
@@ -470,7 +466,7 @@ async def on_message(message):
 
         embed.description = leaderboard
         await message.channel.send(embed=embed)
-        '''
+        
 
 
     if message.content.lower().startswith(">tetris"):
@@ -507,6 +503,13 @@ async def on_message(message):
             await message.channel.send("you're already not playing tetris. you cant not play two of them")
         else:
             games[message.author].game_over = True
+            await games[message.author].update_board()
+
+    if message.content.lower().startswith(">support") or message.content.lower().startswith(">contact"):
+        await message.channel.send("you can contact the dev at jackscape#8867, or go to support server http://discord.gg/DDWzc8Z")
+
+    if message.content.lower().startswith(">servers"):
+        await message.channel.send(str(len(list(bot.guilds))))
 
     if message.content.lower().startswith(">pause"):
         if message.author not in games or games[message.author].game_over:
