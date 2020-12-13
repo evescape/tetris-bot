@@ -506,7 +506,7 @@ async def on_message(message):
             await games[message.author].update_board()
 
     if message.content.lower().startswith(">support") or message.content.lower().startswith(">contact"):
-        await message.channel.send("you can contact the dev at jackscape#8867, or go to support server http://discord.gg/DDWzc8Z")
+        await message.channel.send("you can contact the dev at jackscape#8867, or go to support server https://discord.gg/N28Q6WGM7Z")
 
     if message.content.lower().startswith(">servers"):
         await message.channel.send(str(len(list(bot.guilds))))
