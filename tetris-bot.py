@@ -108,7 +108,7 @@ class Game:
         embed = self.message.embeds[0]
         embed.description = end_screen
         embed.set_thumbnail(url="https://i.imgur.com/UQYHC56.png")
-        embed.set_footer(text="made by jackscape#8867", icon_url="https://cdn.discordapp.com/attachments/464521761711456263/783447850964484166/17257926.png")
+        embed.set_footer(text="made by evescape#8867", icon_url="https://i.imgur.com/OpeOl7A.png")
         await self.message.edit(embed=embed)
         await self.message.clear_reactions()
         await self.update_scores()
@@ -338,7 +338,8 @@ async def tick():
     global games
     while True:
         for game in list(games.values()):
-            await game.tick()
+            try: await game.tick()
+            except: print("oops")
         await asyncio.sleep(0.1)
         
 async def delete_dead_games():
@@ -506,7 +507,7 @@ async def on_message(message):
             await games[message.author].update_board()
 
     if message.content.lower().startswith(">support") or message.content.lower().startswith(">contact"):
-        await message.channel.send("you can contact the dev at jackscape#8867, or go to support server https://discord.gg/N28Q6WGM7Z")
+        await message.channel.send("you can contact the dev at evescape#8867, or go to support server https://discord.gg/N28Q6WGM7Z")
 
     if message.content.lower().startswith(">servers"):
         await message.channel.send(str(len(list(bot.guilds))))
